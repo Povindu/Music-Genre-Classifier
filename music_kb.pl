@@ -21,34 +21,34 @@ song(re_ahase, billy_fernando, [drums, acoustic_guitar, bass, piano], 125, upbea
 
 recommend_genre('70s Sinhala Pop', 0.95, 'Signature sound of the 70s with organ, clean electric guitar, and a melodic style.') :-
     song_attribute(year, Year), Year >= 1970, Year < 1980,
-    song_attribute(bpm, BPM), BPM > 120,
+    song_attribute(bpm, BPM), BPM => 120,
     song_attribute(instruments, Inst), has_instrument(organ, Inst).
 
 recommend_genre('Baila', 0.98, 'Very high tempo with characteristic trumpet and percussion, designed for dancing.') :-
-    song_attribute(bpm, BPM), BPM > 150,
+    song_attribute(bpm, BPM), BPM >= 150,
     song_attribute(vocals, 'energetic'),
     song_attribute(instruments, Inst),
-    (has_instrument(trumpet, Inst); has_instrument(bongos, Inst)).
+    once((has_instrument(trumpet, Inst); has_instrument(bongos, Inst))).
 
 recommend_genre('80s Pop Rock', 0.90, 'Blend of pop and rock with synthesizers, common in the late 80s.') :-
     song_attribute(year, Year), Year >= 1985, Year < 1995,
     song_attribute(instruments, Inst), has_instrument(synthesizer, Inst), has_instrument(electric_guitar, Inst).
 
 recommend_genre('Sri Lankan Classical Folk', 0.96, 'Slow tempo with traditional Eastern instruments like Sitar and Tabla.') :-
-    song_attribute(bpm, BPM), BPM < 70,
+    song_attribute(bpm, BPM), BPM =< 70,
     song_attribute(vocals, 'classical_melodic'),
     song_attribute(instruments, Inst),
-    (has_instrument(sitar, Inst); has_instrument(serpina, Inst)).
+    once((has_instrument(sitar, Inst); has_instrument(serpina, Inst))).
 
 recommend_genre('Narrative Folk', 0.92, 'Slow, story-telling song, often from a film soundtrack with orchestral elements.') :-
-    song_attribute(bpm, BPM), BPM < 75,
+    song_attribute(bpm, BPM), BPM =< 75,
     song_attribute(vocals, 'narrative'),
     song_attribute(instruments, Inst),
-    (has_instrument(piano, Inst); has_instrument(violin, Inst)).
+    once((has_instrument(piano, Inst); has_instrument(violin, Inst))).
 
 recommend_genre('Calypso Pop', 0.94, 'Upbeat tempo with characteristic Calypso percussion (bongos) from the 60s/70s.') :-
     song_attribute(year, Year), Year < 1975,
-    song_attribute(bpm, BPM), BPM > 135,
+    song_attribute(bpm, BPM), BPM >= 135,
     song_attribute(vocals, 'upbeat'),
     song_attribute(instruments, Inst), has_instrument(bongos, Inst).
 
@@ -60,7 +60,7 @@ recommend_genre('Modern Folk Fusion', 0.93, 'A modern (post-2010) blend of tradi
 
 recommend_genre('Modern Pop', 0.85, 'Modern (post-2015) song with an upbeat, acoustic pop feel.') :-
     song_attribute(year, Year), Year >= 2015,
-    song_attribute(bpm, BPM), BPM > 110,
+    song_attribute(bpm, BPM), BPM >= 110,
     song_attribute(vocals, 'upbeat').
 
 
