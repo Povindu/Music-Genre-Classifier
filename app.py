@@ -75,7 +75,6 @@ with col2:
 
 if st.button("Classify Music", type="primary", use_container_width=True):
     
-    # Filter out any unselected attributes
     final_attributes = {k: v for k, v in attributes.items() if v is not None}
     
     with st.expander("See all collected attributes (facts sent to Prolog)"):
@@ -118,7 +117,7 @@ if st.button("Classify Music", type="primary", use_container_width=True):
         else:
             recommendations.sort(key=lambda x: x.get('confidence', 0), reverse=True)
             
-            st.header(f"🏆 Best Match: {recommendations[0]['genre']}")
+            st.header(f"Best Match: {recommendations[0]['genre']}")
             
             output_data = {
                 'attributes': final_attributes,
@@ -140,7 +139,7 @@ if st.button("Classify Music", type="primary", use_container_width=True):
                 with tab:
                     st.subheader(f"Genre: {rec.get('genre')}")
                     st.metric("Confidence Score", f"{rec.get('confidence', 0) * 100:.1f}%")
-                    st.info(f"💡 **Reason:** {rec.get('reason', 'N/A')}")
+                    st.info(f"**Reason:** {rec.get('reason', 'N/A')}")
 
     except Exception as e:
         st.error(f"An error occurred during the Prolog query: {e}")
