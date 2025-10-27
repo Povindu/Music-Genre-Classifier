@@ -21,7 +21,7 @@ song(re_ahase, billy_fernando, [drums, acoustic_guitar, bass, piano], 125, upbea
 
 recommend_genre('70s Sinhala Pop', 0.95, 'Signature sound of the 70s with organ, clean electric guitar, and a melodic style.') :-
     song_attribute(year, Year), Year >= 1970, Year < 1980,
-    song_attribute(bpm, BPM), BPM => 120,
+    song_attribute(bpm, BPM), BPM >= 120,
     song_attribute(instruments, Inst), has_instrument(organ, Inst).
 
 recommend_genre('Baila', 0.98, 'Very high tempo with characteristic trumpet and percussion, designed for dancing.') :-
