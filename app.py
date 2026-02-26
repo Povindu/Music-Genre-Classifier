@@ -18,7 +18,6 @@ st.write("Describe a song using the options below, or select one of our examples
 
 
 
-# All possible instruments and vocals
 INSTRUMENT_LIST = sorted([
     'acoustic_guitar', 'bass', 'bongos', 'cajon', 'cello', 'double_bass', 'drums',
     'drum_machine', 'electric_guitar', 'flute', 'harmonica', 'organ', 'piano',
@@ -40,7 +39,6 @@ BPM_OPTIONS = {
 BPM_REVERSE_MAP = {v: k for k, v in BPM_OPTIONS.items()}
 
 
-# presets for the "Try These" section
 PRESETS = [
     {
         "title": "Classic Calypso Pop",
@@ -116,50 +114,45 @@ for i, preset in enumerate(PRESETS):
 st.divider()
 
 
-
-# This dictionary will hold all the song attributes for the query
 attributes = {}
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Song Characteristics")
-    
-    # Year of Release
+
     attributes['year'] = st.slider(
         "Year of Release:",
         min_value=1950, max_value=2025, step=1,
-        key='year' # Link this widget to st.session_state.year
+        key='year'
     )
     
-    # Tempo (BPM)
+
     bpm_choice = st.select_slider(
         "Select the song's tempo:",
         options=list(BPM_OPTIONS.keys()),
-        key='bpm_choice' # Link to state
+        key='bpm_choice'
     )
     attributes['bpm'] = BPM_OPTIONS[bpm_choice]
 
 with col2:
     st.subheader("Instrumentation & Vocals")
     
-    # Vocal Style
     vocal_choice = st.selectbox(
         "Select the vocal style:",
         ["Skip / Not Sure"] + VOCAL_LIST,
-        key='vocal_choice' # Link to state
+        key='vocal_choice'
     )
     if vocal_choice != "Skip / Not Sure":
         attributes['vocals'] = vocal_choice
 
-    # Instruments
+
     selected_instruments = st.multiselect(
         "Select the primary instruments in the song:",
         options=INSTRUMENT_LIST,
-        key='instruments' # Link to state
+        key='instruments'
     )
     if selected_instruments:
-        # Correctly format the list for Prolog: e.g., "['piano','bass']"
         formatted_instruments = ",".join([f"'{inst}'" for inst in selected_instruments])
         attributes['instruments'] = f"[{formatted_instruments}]"
 
@@ -167,17 +160,16 @@ with col2:
 
 if st.button("Classify Music", type="primary", use_container_width=True):
     
-    # Filter out any unselected attributes
     final_attributes = {k: v for k, v in attributes.items() if v is not None}
     
     with st.expander("See all collected attributes (facts sent to Prolog)"):
         st.json(final_attributes)
         
     try:
-        # Cleanup old facts
+
         prolog.retractall("song_attribute(_,_)")
         
-        # Assert all new facts
+
         for key, value in final_attributes.items():
             fact_string = ""
             if key == 'instruments':
@@ -188,14 +180,14 @@ if st.button("Classify Music", type="primary", use_container_width=True):
                 fact_string = f"song_attribute({key}, '{value}')"
             prolog.assertz(fact_string)
 
-        # Query for ALL recommendations
+
         query_string = "all_recommendations(Matches)"
         raw_results = list(prolog.query(query_string))
 
-        # Cleanup facts immediately
+
         prolog.retractall("song_attribute(_,_)")
         
-        # Process results into a clean list of dictionaries
+
         recommendations = []
         if raw_results and 'Matches' in raw_results[0]:
             for r in raw_results[0]['Matches']:
@@ -206,8 +198,7 @@ if st.button("Classify Music", type="primary", use_container_width=True):
                 })
         
         st.divider()
-        
-        # --- Display the results ---
+
         if not recommendations:
             st.warning("No specific genre matched your unique criteria. Try adjusting the attributes.")
         else:
@@ -238,5 +229,4 @@ if st.button("Classify Music", type="primary", use_container_width=True):
 
     except Exception as e:
         st.error(f"An error occurred during the Prolog query: {e}")
-        # Ensure cleanup even if there's an error
         prolog.retractall("song_attribute(_,_)")
